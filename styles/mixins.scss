@@ -1,0 +1,560 @@
+@use "~/styles/variables.module" as *;
+
+/* -------------------- Global Utility Mixins -------------------- */
+
+// _visually_ hides an element while leaving it available for screen readers
+@mixin visually-hidden {
+  // Do not obscure the DOM layout.
+  position: absolute;
+
+  // Prevent element from spacing itself out.
+  border: 0;
+  padding: 0;
+  margin: 0;
+
+  // Place text in screen-readable (non-zero-sized) block. Then clip the block so that it isn't visible (to the eye).
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+
+  // Help screen readers see full sentences (instead of multilined, separated letters).
+  white-space: nowrap;
+
+  // Make element unscrollable.
+  overflow: hidden;
+}
+
+@mixin input-container {
+  display: flex;
+  flex: 1;
+  min-height: $ButtonHeight;
+  padding: 0 14px;
+  border: 1px solid var(--color-grey-3);
+  justify-content: center;
+  border-radius: 4px;
+  position: relative;
+  input {
+    border: none;
+    margin: 1px;
+    outline: none;
+  }
+
+  &__error {
+    border-color: var(--color-red);
+
+    &:focus-within {
+      outline: none;
+    }
+
+    label {
+      color: var(--color-red);
+    }
+  }
+
+  &:focus-within {
+    outline: 1px solid var(--color-nav-background);
+    outline-offset: -1px;
+  }
+
+  &__error {
+    border-color: var(--color-red);
+    &:focus-within {
+      outline: none;
+    }
+    label {
+      color: var(--color-red);
+    }
+  }
+
+  label {
+    background-color: var(--color-white);
+    @include button-label-position;
+  }
+}
+
+@mixin button-label-position {
+  position: absolute;
+  top: 0;
+  transform: translateY(-50%);
+  left: var(--spacing-xs) - var(--spacing-3xs);
+  font-size: var(--font-size-subtext);
+  line-height: (20/12);
+  font-weight: var(--font-semibold);
+  padding: 0 var(--spacing-3xs);
+}
+
+// TODO: The styles for the dialog component will need to be unified into css classes directly
+//  and not be one off in each instance. This helps unify the styling across usages for now.
+@mixin dialog-close-button-positioning {
+  @include bp-mobile-only {
+    padding: var(--spacing-xl) var(--spacing-xs);
+  }
+
+  > button[type="button"][aria-label] {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: var(--color-black);
+
+    @include bp-mobile-only {
+      position: fixed;
+      right: var(--spacing-xs);
+    }
+  }
+}
+
+@mixin anchor-underline($thickness: 1.5px, $offset: var(--spacing-3xs)) {
+  text-decoration: underline;
+  text-decoration-thickness: $thickness;
+  text-underline-offset: $offset;
+}
+
+// TODO: Delete this mixin and replace with `.btn-text` class as needed
+@mixin button-link {
+  display: inline-block;
+  padding: 0;
+  background: none;
+  text-decoration: underline;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+@mixin sm {
+  @include bp-md-down {
+    @content;
+  }
+}
+
+@mixin md {
+  @include bp-md-up {
+    @content;
+  }
+}
+@mixin flex-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin bottom-anchor-cta {
+  position: fixed;
+  top: auto;
+  right: 0;
+  bottom: var(--safe-margin-bottom, 0);
+  left: 0;
+  flex-direction: row-reverse;
+  gap: 12px;
+
+  box-sizing: content-box;
+  padding: var(--spacing-xs);
+  border-top: 1px solid var(--color-grey-3);
+  background: var(--color-white);
+  box-shadow: 0px -2px 4px rgba(29, 29, 29, 0.1);
+  z-index: 2;
+}
+
+@mixin input-label {
+  label {
+    @include button-label-position;
+    background-color: var(--color-white);
+  }
+  input {
+    padding: var(--spacing-xs);
+    width: 100%;
+    font-size: var(--font-size-h6);
+  }
+}
+
+/* Typography Mixins that enforce the UA design guide. For all font-based styling, we should be leveraging these. */
+@mixin h1 {
+  font-size: var(--font-size-h1);
+  line-height: 1;
+  font-weight: var(--font-condensed-black);
+  letter-spacing: 2px;
+  font-style: normal;
+  font-stretch: condensed;
+  text-transform: uppercase;
+}
+
+@mixin h2 {
+  font-size: var(--font-size-h2);
+  line-height: 1;
+  font-weight: var(--font-condensed-black);
+  letter-spacing: 1px;
+  font-stretch: condensed;
+  text-transform: uppercase;
+}
+
+@mixin h3-condensed {
+  font-size: var(--font-size-h3);
+  line-height: 1;
+  font-weight: var(--font-condensed-black);
+  letter-spacing: 0.25px;
+  text-transform: uppercase;
+  font-stretch: condensed;
+}
+
+@mixin h3 {
+  font-size: var(--font-size-h3);
+  line-height: (48/40);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.25px;
+}
+
+@mixin h4-condensed($lineHeight: 1) {
+  font-size: var(--font-size-h4);
+  line-height: $lineHeight;
+  font-weight: var(--font-condensed-black);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-stretch: condensed;
+}
+
+@mixin h4() {
+  font-size: var(--font-size-h4);
+  line-height: (40/32);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.5px;
+  font-stretch: normal;
+  font-style: normal;
+}
+
+@mixin h5-condensed {
+  font-size: var(--font-size-h5);
+  line-height: 1;
+  font-weight: var(--font-condensed-black);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-stretch: condensed;
+}
+
+@mixin h5($weight: var(--font-bold)) {
+  font-size: var(--font-size-h5);
+  line-height: (32/24);
+  font-weight: $weight;
+  letter-spacing: 0.5px;
+}
+
+@mixin h6($weight: var(--font-regular)) {
+  font-size: var(--font-size-h6);
+  line-height: 1.5;
+  font-weight: $weight;
+  letter-spacing: 0.5px;
+}
+
+@mixin body($weight: var(--font-regular)) {
+  font-size: var(--font-size-body);
+  line-height: (20/14);
+  font-weight: $weight;
+  letter-spacing: 0;
+}
+
+@mixin subtext($weight: var(--font-regular)) {
+  font-size: var(--font-size-subtext);
+  line-height: (20/12);
+  font-weight: $weight;
+  letter-spacing: 0;
+}
+
+@mixin legal($weight: var(--font-regular)) {
+  font-size: var(--font-size-legal);
+  line-height: (16/10);
+  font-weight: $weight;
+  letter-spacing: 0;
+}
+
+@mixin mobile-menu-item() {
+  font-size: calc(18rem / 16);
+  line-height: (24/18);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.5px;
+}
+
+// based on figma breakpoints
+@mixin bp-sm-up {
+  @media screen and (min-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin bp-md-down {
+  @media screen and (max-width: $lgMobile) {
+    @content;
+  }
+}
+
+@mixin bp-md-up {
+  @media screen and (min-width: $smDesktop) {
+    @content;
+  }
+}
+
+@mixin bp-lg-down($print: false) {
+  @if $print {
+    @media print, screen and (max-width: $lgTablet) {
+      @content;
+    }
+  } @else {
+    @media screen and (max-width: $lgTablet) {
+      @content;
+    }
+  }
+}
+
+@mixin bp-lg-up {
+  @media screen and (min-width: $lgDesktop) {
+    @content;
+  }
+}
+
+@mixin bp-xl-up {
+  @media screen and (min-width: $maxWidth) {
+    @content;
+  }
+}
+
+@mixin bp-mobile-only {
+  @media screen and (max-width: $mobileMax) {
+    @content;
+  }
+}
+@mixin bp-tablet-only {
+  @media screen and (min-width: $smDesktop) and (max-width: $lgTablet) {
+    @content;
+  }
+}
+
+@mixin bp-small-tablet-only {
+  @media screen and (min-width: $tablet) and (max-width: $lgMobile) {
+    @content;
+  }
+}
+
+@mixin bp-desktop-only {
+  @media screen and (min-width: $lgDesktop) and (max-width: $maxWidth) {
+    @content;
+  }
+}
+//buttons
+@mixin btn {
+  width: 100%;
+  max-width: var(--max-button-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  height: 44px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  @include body(var(--font-bold));
+
+  &:focus {
+    box-shadow: 0 0 4px 2px var(--color-focus-shadow);
+  }
+
+  @include bp-md-up {
+    max-width: var(--button-width);
+  }
+}
+
+@mixin btn-primary-black {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: 1px solid var(--color-black);
+
+  &:disabled {
+    background-color: var(--color-grey-3);
+  }
+
+  &:hover,
+  &:focus {
+    background-color: var(--color-grey-5);
+    border: 1px solid var(--color-grey-5);
+    color: var(--color-white);
+  }
+}
+
+@mixin btn-primary-white {
+  background-color: var(--color-white);
+  color: var(--color-black);
+  border: 1px solid var(--color-white);
+
+  &:disabled {
+    color: var(--color-grey-3);
+  }
+
+  &:hover {
+    border: 1px solid var(--color-grey-5);
+    color: var(--color-grey-5);
+  }
+}
+
+@mixin btn-secondary-black {
+  color: var(--color-black);
+  border: 1px solid var(--color-black);
+  background-color: transparent;
+
+  &:focus {
+    background-color: var(--color-white);
+    color: var(--color-white);
+  }
+
+  &:disabled {
+    border: 1px solid var(--color-grey-3);
+    color: var(--color-grey-3);
+    background-color: transparent;
+  }
+
+  &:hover {
+    color: var(--color-grey-5);
+    background-color: transparent;
+    border: 1px solid var(--color-grey-5);
+  }
+}
+
+@mixin btn-secondary-white {
+  color: var(--color-white);
+  border: 1px solid var(--color-white);
+  background-color: transparent;
+
+  &:disabled {
+    color: var(--color-grey-5);
+    border: 1px solid var(--color-grey-5);
+    background-color: transparent;
+  }
+
+  &:hover {
+    color: var(--color-grey-3);
+    border: 1px solid var(--color-grey-3);
+    background-color: transparent;
+  }
+}
+
+@mixin btn-tertiary-red {
+  color: var(--color-white);
+  background-color: var(--color-red);
+  border: 1px solid var(--color-red);
+
+  &:disabled {
+    background-color: var(--color-red-3);
+    border: 1px solid var(--color-red-3);
+  }
+
+  &:hover {
+    background-color: var(--color-red-4);
+    border: 1px solid var(--color-red-4);
+  }
+}
+
+@mixin btn-link {
+  text-decoration: underline;
+  @include body(var(--font-regular));
+
+  &:hover {
+    font-weight: var(--font-bold);
+  }
+
+  &:focus {
+    box-shadow: 0 0 4px 2px var(--color-focus-shadow);
+  }
+}
+
+@mixin btn-link-black {
+  color: var(--color-black);
+
+  &:hover {
+    color: var(--color-grey-5);
+  }
+}
+
+@mixin btn-link-gray {
+  color: var(--color-grey-5);
+}
+
+@mixin btn-link-white {
+  color: var(--color-white);
+}
+
+@mixin ul-list {
+  list-style-type: disc;
+  margin: var(--spacing-2xs) 0;
+  margin-left: 20px;
+  text-align: left;
+  font-size: var(--font-size-body);
+
+  > li {
+    margin-bottom: var(--spacing-2xs);
+
+    ul {
+      list-style-type: circle;
+    }
+  }
+}
+
+@mixin ol-list {
+  margin: var(--spacing-2xs) 0;
+  margin-left: 20px;
+  text-align: left;
+  font-size: var(--font-size-body);
+  padding-left: 0;
+
+  > li {
+    margin-bottom: var(--spacing-2xs);
+
+    > ol {
+      list-style-type: lower-latin;
+    }
+  }
+}
+
+@mixin table {
+  width: 100%;
+  border-spacing: 0;
+  text-align: left;
+  tr {
+    &:nth-child(even) {
+      background-color: var(--color-grey-2);
+    }
+    &:first-of-type {
+      background-color: transparent;
+      th,
+      td {
+        border-bottom: 2px solid var(--color-grey-2);
+      }
+    }
+    &:last-of-type {
+      border-bottom: 2px solid var(--color-grey-2);
+    }
+  }
+  th,
+  td {
+    padding: var(--spacing-2xs);
+  }
+}
+
+@mixin table-border {
+  width: 100%;
+  border-spacing: 0;
+  text-align: left;
+  border: 1px solid var(--color-grey-2);
+  td {
+    border: 1px solid var(--color-grey-2);
+  }
+  th,
+  td {
+    padding: var(--spacing-2xs);
+  }
+}

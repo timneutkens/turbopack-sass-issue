@@ -1,0 +1,11 @@
+@use "~/styles/mixins" as *;
+
+.inseam-data {
+  @include body(var(--font-semibold));
+  color: var(--color-grey-5);
+  margin-bottom: var(--spacing-2xs);
+}
+
+.inseam-data::first-letter {
+  text-transform: capitalize;
+}

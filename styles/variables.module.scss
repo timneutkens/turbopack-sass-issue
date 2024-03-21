@@ -1,0 +1,36 @@
+//cm margin used
+$cm-margin-2: 8px;
+
+// Media Query Breakpoints
+$DesktopBreak: 1439px;
+$DesktopMaxWidth: $DesktopBreak + 1; // Used to restrict content sizes, not for media queries
+
+$TabletBreak: 1240px;
+$NonTabletMin: $TabletBreak + 1;
+$MobileBreak: 1023px;
+$NonMobileMin: $MobileBreak + 1;
+$MobileBreakMd: 750px;
+$NonMobileMdMin: $MobileBreakMd + 1;
+$MobileBreakSm: 600px;
+$NonMobileSmMin: $MobileBreakSm + 1;
+
+//figma styleguide breakpoints.
+$mobileMax: 479px;
+$tablet: 480px;
+$lgMobile: 767px;
+$smDesktop: 768px;
+$lgTablet: 1023px;
+$lgDesktop: 1024px;
+//max container width
+$maxWidth: 1440px;
+//iOs max screen height dialog support
+$maxDialogHeightSupport: 480px;
+
+// Mobile Menu tablet breakpoints
+$MobileMenuQueryMax: 1023px;
+$MobileMenuQueryMin: 768px;
+$MobileMenuQuerySm: 767px;
+
+// Control spacings
+$ButtonHeight: 44px;
+$MobileButtonHeight: 55px;
